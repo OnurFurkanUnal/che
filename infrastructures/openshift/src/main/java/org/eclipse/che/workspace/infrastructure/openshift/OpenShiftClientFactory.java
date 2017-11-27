@@ -14,16 +14,23 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.fabric8.openshift.client.OpenShiftConfig;
 import io.fabric8.openshift.client.OpenShiftConfigBuilder;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.commons.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** @author Sergii Leshchenko */
+@Singleton
 public class OpenShiftClientFactory {
-  private final OpenShiftConfig config;
+
+  private static final Logger LOG = LoggerFactory.getLogger(OpenShiftClientFactory.class);
+
+  private final OpenShiftClient client;
 
   @Inject
   public OpenShiftClientFactory(
@@ -52,7 +59,7 @@ public class OpenShiftClientFactory {
     if (doTrustCerts != null) {
       configBuilder.withTrustCerts(doTrustCerts);
     }
-    config = configBuilder.build();
+    this.client = new DefaultOpenShiftClient(configBuilder.build());
   }
 
   /**
@@ -61,6 +68,15 @@ public class OpenShiftClientFactory {
    * @throws InfrastructureException if any error occurs on client instance creation.
    */
   public OpenShiftClient create() throws InfrastructureException {
-    return new DefaultOpenShiftClient(config);
+    return client;
+  }
+
+  @PreDestroy
+  public void cleanup() {
+    try {
+      client.close();
+    } catch (RuntimeException ex) {
+      LOG.error(ex.getMessage());
+    }
   }
 }
