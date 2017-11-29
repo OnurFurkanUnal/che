@@ -41,7 +41,10 @@ public class FileCleaner {
 
   private static ScheduledExecutorService exec =
       Executors.newSingleThreadScheduledExecutor(
-          new ThreadFactoryBuilder().setNameFormat("FileCleaner").setDaemon(true).build());
+          new ThreadFactoryBuilder()
+              .setNameFormat("FileCleaner")
+              .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+              .setDaemon(true).build());
 
   static {
     exec.scheduleAtFixedRate(

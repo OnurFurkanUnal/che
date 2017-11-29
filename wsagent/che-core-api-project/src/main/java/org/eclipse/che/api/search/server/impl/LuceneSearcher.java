@@ -73,6 +73,7 @@ import org.eclipse.che.api.core.util.FileCleaner;
 import org.eclipse.che.api.fs.server.PathTransformer;
 import org.eclipse.che.api.search.server.SearchResult;
 import org.eclipse.che.api.search.server.Searcher;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -120,6 +121,7 @@ public class LuceneSearcher implements Searcher {
         newSingleThreadExecutor(
             new ThreadFactoryBuilder()
                 .setDaemon(true)
+                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
                 .setNameFormat("LuceneSearcherInitThread")
                 .build());
   }

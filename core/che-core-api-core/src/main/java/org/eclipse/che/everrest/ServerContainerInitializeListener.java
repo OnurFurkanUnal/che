@@ -35,6 +35,7 @@ import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
 import javax.ws.rs.core.SecurityContext;
 import org.eclipse.che.commons.env.EnvironmentContext;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.eclipse.che.commons.subject.Subject;
 import org.everrest.core.DependencySupplier;
 import org.everrest.core.ResourceBinder;
@@ -206,7 +207,10 @@ public class ServerContainerInitializeListener implements ServletContextListener
         "everrest.WSConnection." + servletContext.getServletContextName() + "-%d";
     return Executors.newFixedThreadPool(
         everrestConfiguration.getAsynchronousPoolSize(),
-        new ThreadFactoryBuilder().setNameFormat(threadNameFormat).setDaemon(true).build());
+        new ThreadFactoryBuilder().setNameFormat(threadNameFormat)
+            .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+            .setDaemon(true)
+            .build());
   }
 
   protected SecurityContext createSecurityContext(final HandshakeRequest req) {

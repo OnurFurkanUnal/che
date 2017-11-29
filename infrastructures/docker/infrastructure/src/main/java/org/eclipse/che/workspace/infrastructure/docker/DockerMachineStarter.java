@@ -44,6 +44,7 @@ import org.eclipse.che.api.core.model.workspace.runtime.RuntimeIdentity;
 import org.eclipse.che.api.core.util.FileCleaner;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.api.workspace.server.spi.InternalInfrastructureException;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.eclipse.che.infrastructure.docker.client.DockerConnector;
 import org.eclipse.che.infrastructure.docker.client.DockerFileException;
 import org.eclipse.che.infrastructure.docker.client.LogMessage;
@@ -179,6 +180,7 @@ public class DockerMachineStarter {
         Executors.newCachedThreadPool(
             new ThreadFactoryBuilder()
                 .setNameFormat("MachineLogsStreamer-%d")
+                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
                 .setDaemon(true)
                 .build());
   }

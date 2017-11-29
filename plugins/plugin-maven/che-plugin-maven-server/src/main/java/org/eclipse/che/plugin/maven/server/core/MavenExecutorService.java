@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,10 @@ public class MavenExecutorService {
 
   public MavenExecutorService() {
     ThreadFactory threadFactory =
-        new ThreadFactoryBuilder().setNameFormat("Maven Executor - %d").build();
+        new ThreadFactoryBuilder()
+            .setNameFormat("Maven Executor - %d")
+            .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+            .build();
     service = Executors.newFixedThreadPool(1, threadFactory);
   }
 

@@ -26,6 +26,7 @@ import org.eclipse.che.api.core.model.workspace.Workspace;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.core.notification.EventSubscriber;
 import org.eclipse.che.api.workspace.shared.event.WorkspaceRemovedEvent;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,7 @@ public class RemoveLocalProjectsFolderOnWorkspaceRemove
         Executors.newCachedThreadPool(
             new ThreadFactoryBuilder()
                 .setNameFormat("RemoveLocalProjectsFolderOnWorkspaceRemove-%d")
+                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
                 .build());
   }
 

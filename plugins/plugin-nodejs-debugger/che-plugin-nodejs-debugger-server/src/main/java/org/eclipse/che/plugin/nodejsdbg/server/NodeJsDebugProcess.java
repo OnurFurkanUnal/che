@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.che.commons.lang.IoUtil;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.eclipse.che.plugin.nodejsdbg.server.exception.NodeJsDebuggerException;
 import org.eclipse.che.plugin.nodejsdbg.server.exception.NodeJsDebuggerTerminatedException;
 import org.slf4j.Logger;
@@ -54,7 +55,11 @@ public class NodeJsDebugProcess implements NodeJsProcessObservable {
     executor =
         Executors.newScheduledThreadPool(
             1,
-            new ThreadFactoryBuilder().setNameFormat("nodejs-debugger-%d").setDaemon(true).build());
+            new ThreadFactoryBuilder()
+                .setNameFormat("nodejs-debugger-%d")
+                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+                .setDaemon(true)
+                .build());
 
     OutputReader outputReader = new OutputReader(process, outputSeparator, this::notifyObservers);
     executor.scheduleWithFixedDelay(outputReader, 0, 100, TimeUnit.MILLISECONDS);

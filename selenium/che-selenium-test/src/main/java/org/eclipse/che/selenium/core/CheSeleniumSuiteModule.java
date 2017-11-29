@@ -20,6 +20,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import javax.inject.Named;
 import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
+import org.eclipse.che.commons.logback.LogbackModule;
 import org.eclipse.che.selenium.core.action.ActionsFactory;
 import org.eclipse.che.selenium.core.action.GenericActionsFactory;
 import org.eclipse.che.selenium.core.action.MacOSActionsFactory;
@@ -89,6 +90,8 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     install(new FactoryModuleBuilder().build(TestUserFactory.class));
 
     bind(PageObjectsInjector.class).to(PageObjectsInjectorImpl.class);
+
+    install(new LogbackModule());
 
     if (parseBoolean(System.getenv(CHE_MULTIUSER_VARIABLE))) {
       install(new CheSeleniumMultiUserModule());

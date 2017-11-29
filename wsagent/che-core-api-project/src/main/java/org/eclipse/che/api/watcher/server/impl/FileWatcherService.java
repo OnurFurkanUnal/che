@@ -42,6 +42,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.che.commons.logback.LoggingUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +125,11 @@ public class FileWatcherService {
   void start() throws IOException {
     ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
     ThreadFactory factory =
-        builder.setNameFormat(FileWatcherService.class.getSimpleName()).setDaemon(true).build();
+        builder
+            .setNameFormat(FileWatcherService.class.getSimpleName())
+            .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+            .setDaemon(true)
+            .build();
     executor = newSingleThreadExecutor(factory);
     executor.execute(this::run);
   }
